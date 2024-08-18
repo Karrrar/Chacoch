@@ -20,7 +20,7 @@ const Chacoch: React.FC<ChacochProps> = ({ postion, direction }) => {
 
   // Apply a transform that first translates the triangle and then rotates it around its center
   const transform = `translate(${postion.x - 0.5}, ${postion.y - 0.5}) rotate(${direction}) scale(${1 / cellSize})`;
-
+  console.log("Translate: ", transform)
   return (
     <polygon
       points={points}

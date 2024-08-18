@@ -1,6 +1,8 @@
 export type EventTypeMap = {
   move: { steps: number };
   turn: { direction: "left" | "right" | "up" | "bottom" };
+  gameOver: {};
+  waitUntil: {};
 };
 
 export type AppEvent<K extends keyof EventTypeMap> = {
