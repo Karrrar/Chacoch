@@ -22,6 +22,7 @@ const Stage: React.FC<StageProps> = ({ rows, cols, speed, start }) => {
 
 
   const { position, setPosition } = useChacochState();
+  const [direction, setDirection] = useState<number>(90);
   const [gameOver, setGameOver] = useState<boolean>(false);
   const [win, setWin] = useState<boolean>(false);
 
@@ -39,12 +40,14 @@ const Stage: React.FC<StageProps> = ({ rows, cols, speed, start }) => {
       concatMap(value => timer(speed).pipe(map(() => value)))
     ).subscribe(value => {
       setPosition(value);
+      console.log(value);
       checkGoal(value)
     });
 
-
+    const array: any = [];
     function insteractions() {
       setGameOver(false);
+      turnRight();
       move();
       move();
       move();
@@ -53,9 +56,19 @@ const Stage: React.FC<StageProps> = ({ rows, cols, speed, start }) => {
     }
 
     function move() {
+      const radians = (direction * Math.PI) / 180;
       const currectPostion = $source.value;
-      $source.next({ ...currectPostion, x: currectPostion.x + 1 })
+      const newPosition = {
+        x: Math.round(currectPostion.x + 1 * Math.sin(radians)),
+        y: Math.round(currectPostion.y - 1 * Math.cos(radians)),
+      };
+      $source.next(newPosition)
     }
+
+    function turnRight() {
+      setDirection(0);
+    }
+
     insteractions();
   }, [speed, start])
 
@@ -66,7 +79,7 @@ const Stage: React.FC<StageProps> = ({ rows, cols, speed, start }) => {
       <rect width={cols} height={rows} fill={gameOver || win ? 'rgba(0, 0, 0, 0.5)' : 'white'} />
       <rect width={0.8} height={0.8} x={5 + 0.1} y={0 + 0.1} fill='red' />
       <StageLines rows={rows} cols={cols} />
-      <Chacoch postion={position} direction={90} />
+      <Chacoch postion={position} direction={direction} />
       <StageText gameOver={gameOver} win={win} />
     </svg>
   );
