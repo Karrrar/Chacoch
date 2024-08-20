@@ -1,8 +1,8 @@
 'use client';
-import Chacoch from './Chacoch';
+import Chacoch from './ChacochComponat';
 import { StageLines } from './StageLines';
 import { StageText } from './StageText';
-import { obstacles, useGame } from './game';
+import { obstacles, useGame } from './useGame';
 
 interface StageProps {
   rows: number;
