@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { default as Cha } from './GameObjects/Chacoch';
 

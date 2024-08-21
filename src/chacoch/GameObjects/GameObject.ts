@@ -1,14 +1,27 @@
+import { BehaviorSubject, Observable } from "rxjs";
 import { Position } from "../types";
 
 export default class GameObject {
-  protected _position: Position;
+  private _position: Position;
+  private _position$: BehaviorSubject<Position>;
 
   constructor(position: Position) {
     this._position = position;
+    this._position$ = new BehaviorSubject<Position>(position);
   }
 
-  public get position() {
+  public get position(): Position {
     return this._position;
+  }
+
+  protected set position(value: Position) {
+    this._position = value;
+    this._position$.next(value);
+    console.log("Position", value);
+  }
+
+  public get position$(): Observable<Position> {
+    return this._position$.asObservable();
   }
 
   // Basic method to check collision with another object
