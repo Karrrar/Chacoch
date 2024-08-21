@@ -2,39 +2,46 @@ import { Position } from "../types";
 import Chacoch from "./Chacoch";
 import Obstacle from "./Obstacle";
 
-interface LevelProps {
-  dimensions: { rows: number; cols: number };
+type LevelProps = {
+  dimensions: Dimensions;
   goal: Position;
-}
+};
+
+type Dimensions = {
+  rows: number;
+  columns: number;
+};
 export default class Level {
-  private readonly obstacles: Obstacle[] = [];
-  private readonly goal: Position;
-  private readonly dimensions: { rows: number; cols: number };
+  private readonly _obstacles: Obstacle[] = [];
+  private readonly _goal: Position;
+  private readonly _dimensions: Dimensions;
+
   constructor({ dimensions, goal }: LevelProps) {
     if (!Number.isInteger(dimensions.rows) || dimensions.rows < 1)
       throw new Error("rows must be a positive integer and greater than 1");
-    if (!Number.isInteger(dimensions.cols) || dimensions.cols < 1)
+    if (!Number.isInteger(dimensions.columns) || dimensions.columns < 1)
       throw new Error("columns must be a positive integer and greater than 1");
-    this.goal = goal;
-    this.dimensions = dimensions;
+    this._goal = goal;
+    this._dimensions = dimensions;
   }
 
-  public get Obstacles() {
-    return this.obstacles as ReadonlyArray<Obstacle>;
-  }
-  public get Dimensions() {
-    return this.dimensions;
+  public get obstacles(): ReadonlyArray<Obstacle> {
+    return this._obstacles;
   }
 
-  public get Goal() {
-    return this.goal;
+  public get dimensions(): Dimensions {
+    return this._dimensions;
   }
 
-  addObstacle(obstacle: Obstacle) {
-    this.obstacles.push(obstacle);
+  public get goal(): Position {
+    return this._goal;
   }
 
-  isComplete(char: Chacoch) {
-    return char.Position.x === this.goal.x && char.Position.y === this.goal.y;
+  addObstacle(obstacle: Obstacle): void {
+    this._obstacles.push(obstacle);
+  }
+
+  isComplete(char: Chacoch): boolean {
+    return char.position.x === this._goal.x && char.position.y === this._goal.y;
   }
 }

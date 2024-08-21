@@ -3,12 +3,12 @@ import Level from "@/chacoch/GameObjects/Level";
 import Obstacle from "@/chacoch/GameObjects/Obstacle";
 describe("Level test", () => {
   const level = new Level({
-    dimensions: { rows: 2, cols: 2 },
+    dimensions: { rows: 2, columns: 2 },
     goal: { x: 2, y: 2 },
   });
   test("should have obstacles", () => {
     // Arrange
-    expect(level.Obstacles).not.toBeNull();
+    expect(level.obstacles).not.toBeNull();
   });
 
   test("Add Obstacle to level", () => {
@@ -18,8 +18,8 @@ describe("Level test", () => {
     level.addObstacle(new Obstacle({ x: 1, y: 1 }));
 
     // Assert
-    expect(level.Obstacles.length).toBe(1);
-    expect(level.Obstacles[0].Position).toEqual({ x: 1, y: 1 });
+    expect(level.obstacles.length).toBe(1);
+    expect(level.obstacles[0].position).toEqual({ x: 1, y: 1 });
   });
 
   test("should have rows and cols greater than 2x2", () => {
@@ -40,18 +40,18 @@ describe("Level test", () => {
     const goal = { x: 3, y: 4 };
 
     // Act
-    const level = new Level({ dimensions: { rows: 3, cols: 3 }, goal });
+    const level = new Level({ dimensions: { rows: 3, columns: 3 }, goal });
 
     // Assert
-    expect(level.Goal.x).toBe(3);
-    expect(level.Goal.y).toBe(4);
+    expect(level.goal.x).toBe(3);
+    expect(level.goal.y).toBe(4);
   });
 
   test("Level isComplete will be true when Chacoch reach the goal", () => {
     // Arrange
     const char = new Chacoch();
     const goal = { x: 2, y: 0 };
-    const level = new Level({ dimensions: { rows: 3, cols: 3 }, goal });
+    const level = new Level({ dimensions: { rows: 3, columns: 3 }, goal });
     // Move Chacoch to the goal
     char.move();
     char.move();

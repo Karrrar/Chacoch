@@ -1,21 +1,21 @@
 import { Position } from "../types";
 
 export default class GameObject {
-  protected position: Position;
+  protected _position: Position;
 
   constructor(position: Position) {
-    this.position = position;
+    this._position = position;
   }
 
-  public get Position() {
-    return this.position;
+  public get position() {
+    return this._position;
   }
 
   // Basic method to check collision with another object
   collidesWith(object: GameObject): boolean {
     return (
-      object.position.x === this.position.x &&
-      object.position.y === this.position.y
+      object._position.x === this._position.x &&
+      object._position.y === this._position.y
     );
   }
 }
