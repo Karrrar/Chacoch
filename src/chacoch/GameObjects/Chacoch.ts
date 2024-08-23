@@ -3,6 +3,7 @@ import { Position } from "../types";
 import GameObject from "./GameObject";
 
 export default class Chacoch extends GameObject {
+  private _canMove: boolean = true;
   private _direction: number = 90;
   private _direction$: BehaviorSubject<number>;
 
@@ -23,14 +24,24 @@ export default class Chacoch extends GameObject {
     return this._direction$.asObservable();
   }
 
+  public get canMove(): boolean {
+    return this._canMove;
+  }
+  public set canMove(value: boolean) {
+    this._canMove = value;
+  }
+
   public move() {
+    if (!this._canMove) return;
     this.position = this.nextStep();
   }
 
   turnRight() {
+    if (!this._canMove) return;
     this.direction = (this._direction + 90) % 360;
   }
   turnLeft() {
+    if (!this._canMove) return;
     let newDirection = (this._direction - 90) % 360;
     if (newDirection < 0) newDirection += 360;
     this.direction = newDirection;
@@ -38,9 +49,9 @@ export default class Chacoch extends GameObject {
 
   isWithinBounds(maxX: number, maxY: number) {
     return (
-      this.position.x >= 0 &&
+      this.position.x > 0 &&
       this.position.x <= maxX &&
-      this.position.y >= 0 &&
+      this.position.y > 0 &&
       this.position.y <= maxY
     );
   }

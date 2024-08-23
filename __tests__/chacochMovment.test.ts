@@ -159,4 +159,32 @@ describe("Chacoch movement", () => {
     // Assert
     expect(chacoch.position).toEqual({ x: 3, y: 0 });
   });
+
+  describe("Can Move", () => {
+    test("Chacoch cant move when canMove is false", () => {
+      // Arrange
+      const c = new Chacoch({ x: 1, y: 1 });
+
+      // Act
+      c.move();
+      c.canMove = false;
+      c.move();
+
+      // Assert
+      expect(c.position.x).toBe(2);
+    });
+
+    test("Chacoch cant turn when canMove is false", () => {
+      // Arrange
+      const c = new Chacoch({ x: 1, y: 1 });
+
+      // Act
+      c.turnRight();
+      c.canMove = false;
+      c.turnRight();
+
+      // Assert
+      expect(c.direction).toBe(180);
+    });
+  });
 });

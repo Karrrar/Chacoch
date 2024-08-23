@@ -1,139 +1,111 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { Position, Level } from "./types";
-import { LevelOne } from "./levelOne";
-import { eventBus as bus } from "./EventBus";
-import React, { useEffect, useRef, useState } from "react";
-import { concatMap, timer, map } from "rxjs";
+//#region don't touch
+"use client";
 
-const level: Level = LevelOne;
+import { useMemo, useState, useEffect, useCallback } from "react";
+import Chacoch from "./GameObjects/Chacoch";
+import Game from "./GameObjects/Game";
+import Level from "./GameObjects/Level";
+import Obstacle from "./GameObjects/Obstacle";
+import { Position } from "./types";
 
-const eventBus = bus;
-function checkGoal(value: Position) {
-  if (level.goal.x == value.x && level.goal.y == value.y) {
-    return true;
-  }
-  return false;
-}
-
-export function Move() {
-  eventBus.emit({
-    type: "move",
-    data: {
-      steps: 1,
-    },
-  });
-}
-
-export function TurnRight() {
-  eventBus.emit({
-    type: "turn",
-    data: {
-      direction: "right",
-    },
-  });
-}
-
-export const obstacles: Position[] = [
-  { x: 3, y: 3 },
-  { x: 4, y: 5 },
-  { x: 6, y: 7 },
-];
-function isCollision(nextPosition: Position): boolean {
-  // Check if the position is out of bounds (assuming a grid size)
-  const gridSize = { width: 10, height: 10 }; // Example grid size
-  if (
-    nextPosition.x < 0 ||
-    nextPosition.x >= gridSize.width ||
-    nextPosition.y < 0 ||
-    nextPosition.y >= gridSize.height
-  ) {
-    return true; // Collision with the grid boundaries
-  }
-
-  // Check for collision with obstacles
-  for (let obstacle of obstacles) {
-    if (obstacle.x === nextPosition.x && obstacle.y === nextPosition.y) {
-      console.log(
-        `Collision detected with obstacle at (${obstacle.x}, ${obstacle.y})`
-      );
-      return true; // Collision with an obstacle
-    }
-  }
-
-  return false; // No collision
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export const useGame = () => {
-  const [position, setPosition] = useState<Position>({ x: 1, y: 3 });
-  const [direction, setDirection] = useState<number>(0);
-  const [gameOver, setGameOver] = useState<boolean>(false);
-  const [win, setWin] = useState<boolean>(false);
-
-  // Use refs to keep track of the latest position and direction
-  const positionRef = useRef(position);
-  const directionRef = useRef(direction);
-  const gameOverRef = useRef(gameOver);
-
-  useEffect(() => {
-    positionRef.current = position;
-  }, [position]);
-
-  useEffect(() => {
-    directionRef.current = direction;
-  }, [direction]);
-
-  useEffect(() => {
-    gameOverRef.current = gameOver;
-  }, [gameOver]);
-  useEffect(() => {
-    const unsubscribe = eventBus.events$
-      .pipe(concatMap((value) => timer(400).pipe(map(() => value))))
-      .subscribe((event) => {
-        console.log("Event: ", event);
-        if (gameOverRef.current) return;
-
-        if (event.type === "move") {
-          setPosition((prevPosition) => {
-            const radians = (directionRef.current * Math.PI) / 180;
-            const newPosition = {
-              x: Math.round(prevPosition.x + 1 * Math.sin(radians)),
-              y: Math.round(prevPosition.y - 1 * Math.cos(radians)),
-            };
-            if (isCollision(newPosition)) {
-              console.log("Game Over! Collision detected.");
-              setGameOver(true);
-            }
-            if (checkGoal(newPosition)) {
-              setWin(true);
-            }
-            return newPosition;
-          });
-        }
-
-        if (event.type === "turn") {
-          setDirection((prevDirection) => {
-            let newDirection = prevDirection;
-            if (event.data.direction === "right") {
-              newDirection = (prevDirection + 90) % 360;
-            } else if (event.data.direction === "left") {
-              newDirection = (prevDirection - 90 + 360) % 360;
-            }
-            return newDirection;
-          });
-        }
-      });
-    function instructions() {
-      Move();
-      Move();
-      TurnRight();
-      Move();
-      Move();
-      Move();
-      Move();
-    }
-    instructions();
-    return () => unsubscribe.unsubscribe();
+  const game = useMemo(() => {
+    const l = new Level({
+      dimensions: { rows: 10, columns: 10 },
+      goal: { x: 8, y: 7 },
+      startingPosition: { x: 1, y: 1 },
+    });
+    const c = new Chacoch(l.startingPosition);
+    return new Game({ level: l, chacoch: c });
   }, []);
 
-  return { position, direction, win, gameOver };
+  const [position, setPosition] = useState<Position>({ x: 1, y: 1 });
+  const [direction, setDirection] = useState<number>(0);
+  const [gameOver, setGameOver] = useState<boolean>(false);
+  const [isComplete, setIsComplete] = useState<boolean>(false);
+  const [obstacles, setObstacles] = useState<ReadonlyArray<Obstacle>>([]);
+
+  const move = useCallback(async () => {
+    game.chacoch.move();
+    game.update();
+    await sleep(200);
+  }, [game]);
+
+  const turnRight = useCallback(async () => {
+    game.chacoch.turnRight();
+    game.update();
+    await sleep(200);
+  }, [game]);
+
+  const turnLeft = useCallback(async () => {
+    game.chacoch.turnLeft();
+    game.update();
+    await sleep(200);
+  }, [game]);
+
+  useEffect(() => {
+    game.level.addObstacle(new Obstacle({ x: 3, y: 6 }));
+    game.level.addObstacle(new Obstacle({ x: 2, y: 7 }));
+    game.level.addObstacle(new Obstacle({ x: 5, y: 5 }));
+    game.level.addObstacle(new Obstacle({ x: 8, y: 1 }));
+    game.level.addObstacle(new Obstacle({ x: 3, y: 8 }));
+    game.level.addObstacle(new Obstacle({ x: 3, y: 4 }));
+    game.level.addObstacle(new Obstacle({ x: 7, y: 4 }));
+    game.level.addObstacle(new Obstacle({ x: 6, y: 3 }));
+    for (let i = 1; i < 9; i++)
+      game.level.addObstacle(new Obstacle({ x: i, y: 9 }));
+    setObstacles(game.level.obstacles);
+  }, [game]);
+
+  useEffect(() => {
+    const position$ = game.chacoch.position$.subscribe((p) => {
+      setPosition(p);
+    });
+
+    const direction$ = game.chacoch.direction$.subscribe((d) => {
+      setDirection(d);
+    });
+
+    const isGameOver$ = game.isGameOver$.subscribe((o) => {
+      setGameOver(o);
+    });
+
+    const isGameComplete$ = game.isComplete$.subscribe((c) => {
+      setIsComplete(c);
+    });
+    //#endregion
+
+    async function instructions() {
+      for (let i = 0; i < 6; i++) await move();
+      await turnRight();
+      for (let i = 0; i < 2; i++) await move();
+      await turnLeft();
+      await move();
+      await turnRight();
+      for (let i = 0; i < 4; i++) await move();
+    }
+
+    //#region don't touch
+    instructions();
+    return () => {
+      position$.unsubscribe();
+      direction$.unsubscribe();
+      isGameOver$.unsubscribe();
+      isGameComplete$.unsubscribe();
+    };
+  }, [game, move, turnRight, turnLeft]);
+
+  return {
+    game,
+    position,
+    direction,
+    gameOver,
+    isComplete,
+    obstacles,
+  };
 };
+//#endregion

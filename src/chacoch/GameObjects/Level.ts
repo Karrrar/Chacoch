@@ -1,4 +1,4 @@
-import { Position } from "../types";
+import { Dimensions, Position } from "../types";
 import Chacoch from "./Chacoch";
 import Obstacle from "./Obstacle";
 
@@ -8,10 +8,6 @@ type LevelProps = {
   startingPosition: Position;
 };
 
-type Dimensions = {
-  rows: number;
-  columns: number;
-};
 export default class Level {
   private readonly _obstacles: Obstacle[] = [];
   private readonly _goal: Position;

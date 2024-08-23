@@ -1,12 +1,14 @@
+'use client';
+
 import React from 'react';
 import { Position } from './types';
 
 interface ChacochProps {
-  postion: Position
+  position: Position;
   direction: number;
 }
 
-const Chacoch: React.FC<ChacochProps> = ({ postion, direction }) => {
+const Chacoch: React.FC<ChacochProps> = ({ position, direction }) => {
 
   const svgWidth = 500;
   const svgHeight = 500;
@@ -19,7 +21,7 @@ const Chacoch: React.FC<ChacochProps> = ({ postion, direction }) => {
 
 
   // Apply a transform that first translates the triangle and then rotates it around its center
-  const transform = `translate(${postion.x - 0.5}, ${postion.y - 0.5}) rotate(${direction}) scale(${1 / cellSize})`;
+  const transform = `translate(${position.x - 0.5}, ${position.y - 0.5}) rotate(${direction}) scale(${1 / cellSize})`;
   console.log("Translate: ", transform)
   return (
     <polygon
