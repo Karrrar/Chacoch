@@ -1,39 +1,30 @@
 'use client';
-import Chacoch from './Chacoch';
 import { StageLines } from './StageLines';
 import { StageText } from './StageText';
-import { obstacles, useGame } from './game';
-
-interface StageProps {
-  rows: number;
-  cols: number;
-  speed: number;
-  start: boolean;
-}
-
-const Stage: React.FC<StageProps> = ({ rows, cols, speed, start }) => {
-  // Fixed SVG width and height
-  const svgWidth = 800;
-  const svgHeight = 800;
+import { default as ChacochComponet } from './ChacochComponat'
+import { useGame } from './useGame';
+import { memo } from 'react';
 
 
+const Stage: React.FC = () => {
 
-  const { position, direction, win, gameOver } = useGame();
+  const { game, gameOver, isComplete, obstacles, position, direction } = useGame(1);
 
 
   return (
-    <svg width={svgWidth} height={svgHeight} viewBox={`0 0 ${cols} ${rows}`} xmlns="http://www.w3.org/2000/svg">
-      <rect width={cols} height={rows} fill={gameOver || win ? 'rgba(0, 0, 0, 0.5)' : 'white'} />
-      <rect width={0.8} height={0.8} x={5 + 0.1} y={0 + 0.1} fill='red' />
-      <StageLines rows={rows} cols={cols} color={gameOver || win ? 'black' : 'rgba(0, 0, 0, 0.5)'} />
+    <svg width={700} height={600} viewBox={`0 0 ${game.level.dimensions.columns} ${game.level.dimensions.rows}`} xmlns="http://www.w3.org/2000/svg">
+      <rect width={game.level.dimensions.columns} height={game.level.dimensions.rows} fill={gameOver || isComplete ? 'rgba(0, 0, 0, 0.5)' : 'white'} />
+      <rect width={0.8} height={0.8} x={game.level.goal.x + 0.1 - 1} y={game.level.goal.y + 0.1 - 1} fill='red' />
+      <StageLines rows={game.level.dimensions.rows} cols={game.level.dimensions.columns} color={gameOver || isComplete ? 'black' : 'rgba(0, 0, 0, 0.5)'} />
       {
         obstacles.map((v, i) =>
-          <rect key={"o-" + i} width={1} height={1} x={v.x - 1} y={v.y - 1} />
-        )}
-      <Chacoch postion={position} direction={direction} />
-      <StageText gameOver={gameOver} win={win} />
+          <rect key={"o-" + i} width={1} height={1} x={v.position.x - 1} y={v.position.y - 1} />
+        )
+      }
+      <ChacochComponet position={position} direction={direction} />
+      <StageText gameOver={gameOver} win={isComplete} />
     </svg>
   );
 };
 
-export default Stage;
+export default memo(Stage);
