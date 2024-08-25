@@ -1,27 +1,16 @@
 //#region don't touch
 "use client";
-
 import { useMemo, useState, useEffect, useCallback } from "react";
-import Chacoch from "./GameObjects/Chacoch";
-import Game from "./GameObjects/Game";
-import Level from "./GameObjects/Level";
 import Obstacle from "./GameObjects/Obstacle";
 import { Position } from "./types";
+import LevelFactory from "./LevelFactory";
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export const useGame = () => {
-  const game = useMemo(() => {
-    const l = new Level({
-      dimensions: { rows: 10, columns: 10 },
-      goal: { x: 8, y: 7 },
-      startingPosition: { x: 1, y: 1 },
-    });
-    const c = new Chacoch(l.startingPosition);
-    return new Game({ level: l, chacoch: c });
-  }, []);
+export const useGame = (level: number) => {
+  const game = useMemo(() => LevelFactory.getLevel(level), [level]);
 
   const [position, setPosition] = useState<Position>({ x: 1, y: 1 });
   const [direction, setDirection] = useState<number>(0);
@@ -47,17 +36,11 @@ export const useGame = () => {
     await sleep(200);
   }, [game]);
 
+  const canMoveForward = useCallback(() => {
+    return game.chacoch.isCanMoveForward(game.level);
+  }, [game]);
+
   useEffect(() => {
-    game.level.addObstacle(new Obstacle({ x: 3, y: 6 }));
-    game.level.addObstacle(new Obstacle({ x: 2, y: 7 }));
-    game.level.addObstacle(new Obstacle({ x: 5, y: 5 }));
-    game.level.addObstacle(new Obstacle({ x: 8, y: 1 }));
-    game.level.addObstacle(new Obstacle({ x: 3, y: 8 }));
-    game.level.addObstacle(new Obstacle({ x: 3, y: 4 }));
-    game.level.addObstacle(new Obstacle({ x: 7, y: 4 }));
-    game.level.addObstacle(new Obstacle({ x: 6, y: 3 }));
-    for (let i = 1; i < 9; i++)
-      game.level.addObstacle(new Obstacle({ x: i, y: 9 }));
     setObstacles(game.level.obstacles);
   }, [game]);
 
@@ -90,7 +73,7 @@ export const useGame = () => {
     }
 
     //#region don't touch
-    instructions();
+    // instructions();
     return () => {
       position$.unsubscribe();
       direction$.unsubscribe();
@@ -106,6 +89,10 @@ export const useGame = () => {
     gameOver,
     isComplete,
     obstacles,
+    move,
+    turnLeft,
+    turnRight,
+    canMoveForward,
   };
 };
 //#endregion

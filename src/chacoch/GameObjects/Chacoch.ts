@@ -1,15 +1,17 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import { Position } from "../types";
 import GameObject from "./GameObject";
+import Level from "./Level";
 
 export default class Chacoch extends GameObject {
   private _canMove: boolean = true;
-  private _direction: number = 90;
+  private _direction: number;
   private _direction$: BehaviorSubject<number>;
 
-  constructor(position: Position = { x: 0, y: 0 }) {
-    super(position);
-    this._direction$ = new BehaviorSubject<number>(90);
+  constructor(position?: Position, direction?: number) {
+    super(position ?? { x: 0, y: 0 });
+    this._direction = direction ?? 90;
+    this._direction$ = new BehaviorSubject<number>(this._direction);
   }
   public get direction(): number {
     return this._direction;
@@ -45,6 +47,18 @@ export default class Chacoch extends GameObject {
     let newDirection = (this._direction - 90) % 360;
     if (newDirection < 0) newDirection += 360;
     this.direction = newDirection;
+  }
+
+  isCanMoveForward(level: Level) {
+    const forwardPosition = this.nextStep();
+    const chacochNewPosition = new Chacoch(forwardPosition, this._direction);
+    return (
+      !level.checkCollisions(chacochNewPosition) &&
+      chacochNewPosition.isWithinBounds(
+        level.dimensions.columns,
+        level.dimensions.rows
+      )
+    );
   }
 
   isWithinBounds(maxX: number, maxY: number) {

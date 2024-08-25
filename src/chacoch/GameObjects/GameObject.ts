@@ -17,7 +17,6 @@ export default class GameObject {
   protected set position(value: Position) {
     this._position = value;
     this._position$.next(value);
-    console.log("Position", value);
   }
 
   public get position$(): Observable<Position> {

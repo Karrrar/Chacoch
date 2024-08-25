@@ -32,6 +32,7 @@ export default class Game {
       ) || this.level.checkCollisions(this.chacoch);
 
     this.isComplete = this._level.isGoalReached(this._chacoch);
+    this.chacoch.canMove = !this.isComplete && !this._isGameOver;
   }
 
   public get chacoch(): Chacoch {
