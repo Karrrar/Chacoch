@@ -1,3 +1,5 @@
+// #region don't touch
+
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
@@ -9,47 +11,19 @@ import { useEffect } from "react";
 
 
 export default function Home() {
-  const { game, gameOver, isComplete, obstacles, position, direction, move, turnRight, canMoveForward } = useGame(2);
+  const { game, gameOver, isComplete, obstacles, position, direction, move, turnRight, turnLeft, canMoveForward } = useGame(0);
 
-  async function turnLeft() {
-    await turnRight();
-    await turnRight();
-    await turnRight();
+  // #endregion 
+
+  // learn to move and turn right
+  async function instructions() {
+    // type your code
+
   }
 
-  async function moveSteps(steps: number) {
-    for (let i = 0; i < steps; i++)
-      await moveAndCount();
-  }
-  let count = 0;
-  async function moveAndCount() {
-    await move();
-    count++;
-  }
-
-  async function fn() {
-
-    // while (true) {
-    //   if (canMoveForward())
-    //     await move();
-    //   else { await turnRight(); break }
-    // }
-    const steps = 6;
-    await moveSteps(steps);
-    await turnRight();
-    await moveAndCount();
-    await moveAndCount();
-    await turnLeft();
-    await moveAndCount();
-    await turnRight();
-    for (let i = 0; i < 4; i++)
-      await moveAndCount();
-    console.log("Count: ", count);
-  }
-
-
+  // #region don't touch
   useEffect(() => {
-    fn();
+    instructions();
   }, [])
 
 
@@ -68,3 +42,4 @@ export default function Home() {
     </svg>
   );
 }
+// #endregion
