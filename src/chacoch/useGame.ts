@@ -1,4 +1,3 @@
-//#region don't touch
 "use client";
 import { useMemo, useState, useEffect, useCallback } from "react";
 import Obstacle from "./GameObjects/Obstacle";
@@ -60,20 +59,7 @@ export const useGame = (level: number) => {
     const isGameComplete$ = game.isComplete$.subscribe((c) => {
       setIsComplete(c);
     });
-    //#endregion
 
-    async function instructions() {
-      for (let i = 0; i < 6; i++) await move();
-      await turnRight();
-      for (let i = 0; i < 2; i++) await move();
-      await turnLeft();
-      await move();
-      await turnRight();
-      for (let i = 0; i < 4; i++) await move();
-    }
-
-    //#region don't touch
-    // instructions();
     return () => {
       position$.unsubscribe();
       direction$.unsubscribe();
@@ -95,4 +81,3 @@ export const useGame = (level: number) => {
     canMoveForward,
   };
 };
-//#endregion
