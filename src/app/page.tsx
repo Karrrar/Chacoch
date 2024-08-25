@@ -11,19 +11,13 @@ import { useEffect } from "react";
 
 
 export default function Home() {
-  const { game, gameOver, isComplete, obstacles, position, direction, move, turnRight, turnLeft } = useGame(1);
+  const { game, gameOver, isComplete, obstacles, position, direction, move, turnRight, turnLeft } = useGame(0);
 
   // #endregion 
 
 
   async function instructions() {
-    for (let i = 0; i < 6; i++) await move();
-    await turnRight();
-    for (let i = 0; i < 2; i++) await move();
-    await turnLeft();
-    await move();
-    await turnRight();
-    for (let i = 0; i < 4; i++) await move();
+
   }
 
   // #region don't touch
