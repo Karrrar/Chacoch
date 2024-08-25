@@ -11,11 +11,11 @@ import { useEffect } from "react";
 
 
 export default function Home() {
-  const { game, gameOver, isComplete, obstacles, position, direction, move, turnRight, canMoveForward } = useGame(4);
+  const { game, gameOver, isComplete, obstacles, position, direction, move } = useGame(4);
 
-  // #endregion 
+  // #endregion
 
-  // Use loop to move 45 step
+  // Hint: Use loop to move 45 step
   async function instructions() {
   }
 

@@ -11,7 +11,7 @@ import { useEffect } from "react";
 
 
 export default function Home() {
-  const { game, gameOver, isComplete, obstacles, position, direction, move, turnRight, turnLeft, canMoveForward } = useGame(0);
+  const { game, gameOver, isComplete, obstacles, position, direction, move, turnRight } = useGame(0);
 
   // #endregion 
 

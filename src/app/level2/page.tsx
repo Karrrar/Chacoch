@@ -13,9 +13,9 @@ import { useEffect } from "react";
 export default function Home() {
   const { game, gameOver, isComplete, obstacles, position, direction, move, turnRight } = useGame(2);
 
-  // #endregion 
+  // #endregion
 
-
+  // Hint: Create a new function to make chacoch turn left
   async function instructions() {
     // type your code
   }

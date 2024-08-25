@@ -11,11 +11,11 @@ import { useEffect } from "react";
 
 
 export default function Home() {
-  const { game, gameOver, isComplete, obstacles, position, direction, move, turnRight, canMoveForward } = useGame(5);
+  const { game, gameOver, isComplete, obstacles, position, direction, move, turnRight, turnLeft } = useGame(5);
 
-  // #endregion 
+  // #endregion
 
-  // Use function with parameters
+  // Hint: Use function with parameters
   async function instructions() {
   }
 
